@@ -71,7 +71,14 @@ def check_seat(prn, seat):
     try:
         session = requests.Session()
         
-        # SKIP REDUNDANT DspSeatnum CALL! Just check the result instantly.
+        # We MUST call DspSeatnum first to initialize the server-side session cookie
+        verify_url = f"{BASE_URL}/rsstd/DspSeatnum"
+        verify_params = {"dbnm": "siucore", "prn": prn, "mksea": SEASON}
+        res_verify = session.get(verify_url, params=verify_params, timeout=10)
+        
+        if "Please contact your institute" in res_verify.text or "not yet declared" in res_verify.text:
+            return {"status": "TNG", "seat": seat}
+
         view_url = f"{BASE_URL}/rsstd/viewrslt"
         view_params = {"dbnm": "siucore", "mrkexmid": 3, "siudbnm": "Ff2CU4Z5nA==", "seatno": seat, "p": prn, "se": SEASON}
         res_view = session.get(view_url, params=view_params, timeout=10)
