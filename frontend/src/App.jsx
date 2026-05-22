@@ -25,6 +25,10 @@ function App() {
   });
   const terminalRef = useRef(null);
 
+  // New Smart Tracking Inputs
+  const [startPrn, setStartPrn] = useState('24070122001');
+  const [startSeat, setStartSeat] = useState('528501');
+
   useEffect(() => {
     fetchResults();
   }, [yearFilter, deptFilter, semFilter]);
@@ -84,7 +88,14 @@ function App() {
 
   const handleStart = async () => {
     try {
-      await fetch('http://127.0.0.1:5000/api/start', { method: 'POST' });
+      await fetch('http://127.0.0.1:5000/api/start', { 
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          start_prn: parseInt(startPrn) || null,
+          start_seat: parseInt(startSeat) || null
+        })
+      });
     } catch (err) {
       alert("Failed to connect to local Python API. Make sure 'python api.py' is running!");
     }
@@ -124,6 +135,21 @@ function App() {
           <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem', fontSize: '0.9rem' }}>
             Control the local Python scraper directly from the browser.
           </p>
+          
+          <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+              <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Initial PRN</label>
+              <input type="text" value={startPrn} onChange={e => setStartPrn(e.target.value)} disabled={scraperState.is_running}
+                style={{ background: 'rgba(0,0,0,0.2)', border: '1px solid var(--panel-border)', color: 'white', padding: '0.5rem', borderRadius: '6px', width: '130px' }} 
+              />
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+              <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Initial Seat No.</label>
+              <input type="text" value={startSeat} onChange={e => setStartSeat(e.target.value)} disabled={scraperState.is_running}
+                style={{ background: 'rgba(0,0,0,0.2)', border: '1px solid var(--panel-border)', color: 'white', padding: '0.5rem', borderRadius: '6px', width: '130px' }} 
+              />
+            </div>
+          </div>
           
           <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem' }}>
             <button 
