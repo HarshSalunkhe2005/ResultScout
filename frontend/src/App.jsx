@@ -27,6 +27,7 @@ function App() {
 
   // New Smart Tracking Inputs
   const [startPrn, setStartPrn] = useState('24070122001');
+  const [endPrn, setEndPrn] = useState('24070122200');
   const [startSeat, setStartSeat] = useState('528501');
 
   useEffect(() => {
@@ -93,6 +94,7 @@ function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           start_prn: parseInt(startPrn) || null,
+          end_prn: parseInt(endPrn) || null,
           start_seat: parseInt(startSeat) || null
         })
       });
@@ -140,6 +142,12 @@ function App() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
               <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Initial PRN</label>
               <input type="text" value={startPrn} onChange={e => setStartPrn(e.target.value)} disabled={scraperState.is_running}
+                style={{ background: 'rgba(0,0,0,0.2)', border: '1px solid var(--panel-border)', color: 'white', padding: '0.5rem', borderRadius: '6px', width: '130px' }} 
+              />
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+              <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>End PRN</label>
+              <input type="text" value={endPrn} onChange={e => setEndPrn(e.target.value)} disabled={scraperState.is_running}
                 style={{ background: 'rgba(0,0,0,0.2)', border: '1px solid var(--panel-border)', color: 'white', padding: '0.5rem', borderRadius: '6px', width: '130px' }} 
               />
             </div>
